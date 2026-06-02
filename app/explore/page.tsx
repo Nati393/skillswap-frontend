@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getAllSkills, getAllPosts, likePost } from '@/lib/api';
 import { getSession } from '@/lib/auth';
@@ -10,7 +10,7 @@ const CATEGORIES = ['Todos', 'Music', 'Languages', 'Technology', 'Cooking', 'Art
 
 function getLikesKey(userId: string) { return `skillswap_likes_${userId}`; }
 
-export default function ExplorePage() {
+function ExploreContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [session, setSession] = useState<any>(null);
@@ -69,7 +69,6 @@ export default function ExplorePage() {
     <div style={{ minHeight: '100vh', background: '#f8fafc', paddingBottom: 24, fontFamily: "'Inter', Arial, sans-serif" }}>
       {menuOpen && <SideMenu session={session} onClose={() => setMenuOpen(false)} />}
 
-      {/* Modal de post */}
       {selectedPost && (
         <>
           <div onClick={() => setSelectedPost(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 100, backdropFilter: 'blur(4px)' }} />
@@ -98,7 +97,6 @@ export default function ExplorePage() {
         </>
       )}
 
-      {/* Header */}
       <div style={{ background: '#fff', padding: '14px 20px', borderBottom: '1px solid #f1f5f9', position: 'sticky', top: 0, zIndex: 10 }}>
         <div style={{ maxWidth: 520, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
@@ -121,7 +119,6 @@ export default function ExplorePage() {
       </div>
 
       <div style={{ maxWidth: 520, margin: '0 auto', padding: '14px 16px' }}>
-
         <div style={{ display: 'flex', background: '#f1f5f9', borderRadius: 12, padding: 4, marginBottom: 14 }}>
           {(['posts', 'skills'] as const).map((t) => (
             <button key={t} onClick={() => setTab(t)} style={{ flex: 1, padding: '8px', borderRadius: 10, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: 13, background: tab === t ? '#fff' : 'transparent', color: tab === t ? '#4f46e5' : '#94a3b8', boxShadow: tab === t ? '0 1px 4px rgba(0,0,0,0.08)' : 'none', transition: 'all 0.15s' }}>
@@ -196,7 +193,6 @@ export default function ExplorePage() {
           )
         )}
       </div>
-
     </div>
   );
 }
@@ -220,5 +216,13 @@ function PostTile({ post, liked, onClick }: { post: any; liked: boolean; onClick
         )}
       </div>
     </div>
+  );
+}
+
+export default function ExplorePage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><p style={{ color: '#94a3b8' }}>Cargando...</p></div>}>
+      <ExploreContent />
+    </Suspense>
   );
 }
