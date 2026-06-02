@@ -61,7 +61,7 @@ export default function BankPage() {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', paddingBottom: 80, fontFamily: "'Inter',Arial,sans-serif" }}>
+    <div style={{ minHeight: '100vh', background: '#f8fafc', paddingBottom: 24, fontFamily: "'Inter',Arial,sans-serif" }}>
 
       {menuOpen && <SideMenu session={session} onClose={() => setMenuOpen(false)} />}
 
